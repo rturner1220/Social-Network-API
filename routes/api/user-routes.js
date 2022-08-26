@@ -24,9 +24,9 @@ router
 
 // Add & Delete new friend : /api/users/:userId/friends/:friendId
 router
-    .route('/:userId/friends/:friendID')
-    .route(addNewFriend)
-    .route(deleteNewFriend);
+    .route('/:userId/friends/:friendId')
+    .post(addNewFriend)
+    .delete(deleteNewFriend);
 
 module.exports = router;
 

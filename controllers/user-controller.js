@@ -71,12 +71,11 @@ const userController = {
         User.findOneAndUpdate(
             { _id: params.userId },
             { $push: { friends: params.friendID } },
-            { new: true }
+            { new: true, runValidators: true }
         )
             .then(dbUserData => {
                 if (!dbUserData) {
-                    res.status(404).json({ message: 'No user find with this id!' });
-                    return;
+                    return res.status(404).json({ message: 'No user find with this id!' });
                 }
                 re.json(dbUserData);
             })
@@ -87,8 +86,8 @@ const userController = {
     deleteNewFriend({ params }, res) {
         User.findOneAndDelete(
             { _id: params.userId },
-            { $pull: { comments: params.friendID } },
-            { new: true }
+            { $pull: { friends: params.friendID } },
+            { new: true, runValidators: true }
         )
             .then(dbUserData => {
                 if (!dbUserData) {

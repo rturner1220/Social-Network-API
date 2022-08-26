@@ -26,7 +26,7 @@ router
 //  Add & Delete new reaction : /api/thoughts/:thoughtId/reactions
 router
     .route('/:thoughtId/reactions')
-    .route(createReaction)
-    .route(deleteReaction);
+    .post(createReaction)
+    .delete(deleteReaction);
 
 module.exports = router;
