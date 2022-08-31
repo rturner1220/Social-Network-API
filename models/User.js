@@ -8,7 +8,7 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            trim: true,
+            trim: true
         },
 
         // email address validation => [/.+@.+\..+/]
@@ -16,7 +16,7 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            match: [/.+@.+\..+/],
+            match: [/.+@.+\..+/]
         },
         thoughts: [
             {
