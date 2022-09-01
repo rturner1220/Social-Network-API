@@ -64,18 +64,61 @@ const thoughtController = {
     },
 
 
-    deleteThought() {
-
+    deleteThought({ params }, res) {
+        Thought.findOneAndDelete({ _id: paramas.id })
+            .then(deleteThought => {
+                if (!deleteThought) {
+                    res.status(404).json({ message: 'No thought found with this id' });
+                    return;
+                }
+                return User.findOneAndUpdate(
+                    { _id: params.userId },
+                    { $pull: { thoughts: params.thoughtId } },
+                    { new: true }
+                );
+            })
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id!' });
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch(err =>
+                res.json(err)
+            );
     },
 
-
-    createReaction() {
-
+    // create a reaction stored in a single thought's reactions array field
+    createReaction({ params, body }, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.thoughtId },
+            { $push: { reactions: body } },
+            { new: true, runValidators: true }
+        )
+            .then(dbThoughtData => {
+                if (!dbThoughtData) {
+                    res.status(404).json({ message: 'There is NO thought found with this id!' });
+                    return;
+                }
+                res.json(dbThoughtData);
+            })
+            .catch(err =>
+                res.json(err)
+            );
     },
 
-
-    deleteReaction() {
-
+    // pull and remove a reaction by the reaction's reactionId value
+    deleteReaction({ params }, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.thoughtId },
+            { $pull: { reactions: { reactionId: params.reactionId } } },
+            { new: true }
+        )
+            .then((dbUserData) => res.json(dbUserData))
+            .catch(err =>
+                res.json(err)
+            );
     }
 
 
