@@ -52,7 +52,7 @@ const thoughtController = {
 
     // PUT to update a thought by id
     updateThought(req, res) {
-        Thought.findByIdAndUpdate({ _id: params.id }, body, { new: true })
+        Thought.findByIdAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { new: true })
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
                     res.status(404).json({ message: 'No thought found with this id!' });
@@ -65,7 +65,7 @@ const thoughtController = {
 
 
     deleteThought({ params }, res) {
-        Thought.findOneAndDelete({ _id: paramas.id })
+        Thought.findOneAndDelete({ _id: params.thoughtId })
             .then(deleteThought => {
                 if (!deleteThought) {
                     res.status(404).json({ message: 'No thought found with this id' });

@@ -13,14 +13,24 @@ const userController = {
     },
 
     // get one user by id, populated thought and friend data
-    getSingleUser(req, res) {
-        User.findOne({ _id: req.params.userId })
-            .populate('thought')
-            .populate('friends')
+    getSingleUser({ params }, res) {
+        User.findOne({ _id: params.id })
+            .populate([
+                {
+                    path: 'thoughts',
+                    select: '-__v'
+                },
+                {
+                    path: 'friends',
+                    select: '-__v'
+                },
+
+            ])
             .select('-__v')
-            .then(dbUserData => {
+            .then((dbUserData) => {
                 if (!dbUserData) {
-                    res.status(404).jason({ message: 'No user ID exits.' });
+                    res.status(404).json({ message: 'User with this ID does not exist.' });
+                    return;
                 }
                 res.json(dbUserData);
             })
@@ -38,8 +48,8 @@ const userController = {
     },
 
     // update a user by its _id
-    updatedUser({ params, body }, res) {
-        User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
+    updatedUser(req, res) {
+        User.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true, runValidators: true })
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No User found with this id!' });
@@ -51,8 +61,8 @@ const userController = {
     },
 
     // delete user by its _id and their thoughts
-    deleteUser({ params }, res) {
-        User.findOneAndDelete({ _id: params.id })
+    deleteUser(req, res) {
+        User.findOneAndDelete({ _id: req.params.id })
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user with this id' });
@@ -63,13 +73,13 @@ const userController = {
             .then(() => {
                 res.jason({ message: 'user associated thoughts deleted' })
             })
-            .catch(err => re.status(400).json(err));
+            .catch(err => res.status(400).json(err));
     },
 
     // add a new friend to a user's friend list /api/users/:userId/friends/:friendId
-    addNewFriend({ params }, res) {
+    addNewFriend(req, res) {
         User.findOneAndUpdate(
-            { _id: params.userId },
+            { _id: req.params.userId },
             { $push: { friends: params.friendID } },
             { new: true, runValidators: true }
         )
@@ -83,9 +93,9 @@ const userController = {
     },
 
     // delete a friend from a user's friend list
-    deleteNewFriend({ params }, res) {
+    deleteNewFriend(req, res) {
         User.findOneAndDelete(
-            { _id: params.userId },
+            { _id: req.params.userId },
             { $pull: { friends: params.friendID } },
             { new: true, runValidators: true }
         )
