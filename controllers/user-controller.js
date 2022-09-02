@@ -41,8 +41,15 @@ const userController = {
     },
 
     // create a new user
-    createUser({ body }, res) {
-        User.create(body)
+    createUser(req, res) {
+        User.create(req.body)
+            .then((dbUserData) => {
+                return User.findByIdAndUpdate(
+                    { _id: req.body.userId },
+                    { $push: { users: _id } },
+                    { new: true }
+                );
+            })
             .then(dbUserData => res.json(dbUserData))
             .catch(err => res.status(400).json(err));
     },
