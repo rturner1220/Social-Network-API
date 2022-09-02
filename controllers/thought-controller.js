@@ -89,23 +89,21 @@ const thoughtController = {
             );
     },
 
-    // create a reaction stored in a single thought's reactions array field
+    // create a reaction stored in a single thought's reactions array field - /api/thoughts/:thoughtId/reactions
     createReaction({ params, body }, res) {
-        Thought.findOneAndUpdate(
-            { _id: params.thoughtId },
+        Thought.findByIdAndUpdate(
+            params.thoughtId,
             { $push: { reactions: body } },
             { new: true, runValidators: true }
         )
-            .then(dbThoughtData => {
-                if (!dbThoughtData) {
-                    res.status(404).json({ message: 'There is NO thought found with this id!' });
+            .then(thoughtData => {
+                if (!thoughtData) {
+                    res.status(404).json({ message: 'User with this ID does not exist.' });
                     return;
                 }
-                res.json(dbThoughtData);
+                res.json(thoughtData);
             })
-            .catch(err =>
-                res.json(err)
-            );
+            .catch(err => res.json(err));
     },
 
     // pull and remove a reaction by the reaction's reactionId value
