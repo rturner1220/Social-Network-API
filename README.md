@@ -2,7 +2,7 @@
 
 
 ## Github : [link](https://github.com/rturner1220/Social-Network-API)
-## Deployed app : 
+## Deployed app : [link](https://drive.google.com/file/d/1iKovo_3znpeSJOgWw_Jc6GLqlVRq9Env/view)
 
 
 # Description:
@@ -20,8 +20,10 @@ Create backend of a social-network according to the criteria
 
 # Technologies Use:
 * Mongoose
-* NPM
+* Node.js
 * Express.js
 
 
 # Contributor: Rosa Turner
+
+# Deployed Site Screenshots
