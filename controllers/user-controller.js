@@ -63,14 +63,14 @@ const userController = {
     },
 
     // delete user by its _id and their thoughts
-    deleteUser(req, res) {
-        User.findOneAndDelete({ _id: req.params.id })
+    deleteUser({ params }, res) {
+        User.findOneAndDelete({ _id: params.id })
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user with this id' });
                 }
                 // Remove a user's associated thoughts when deleted.
-                return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
+                Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
             })
             .then(() => {
                 res.jason({ message: 'user associated thoughts deleted' })
@@ -79,26 +79,27 @@ const userController = {
     },
 
     // add a new friend to a user's friend list /api/users/:userId/friends/:friendId
-    addNewFriend(req, res) {
+    addNewFriend({ params }, res) {
         User.findOneAndUpdate(
-            { _id: req.params.userId },
-            { $push: { friends: params.friendID } },
+            params.userId,
+            { $push: { friends: params.friendId } },
             { new: true, runValidators: true }
         )
             .then(dbUserData => {
                 if (!dbUserData) {
-                    return res.status(404).json({ message: 'No user find with this id!' });
+                    res.status(404).json({ message: 'No user find with this id!' });
+                    return;
                 }
-                re.json(dbUserData);
+                res.json(dbUserData);
             })
             .catch(err => res.json(err));
     },
 
     // delete a friend from a user's friend list
-    deleteNewFriend(req, res) {
-        User.findOneAndDelete(
-            { _id: req.params.userId },
-            { $pull: { friends: params.friendID } },
+    deleteNewFriend({ params }, res) {
+        User.findOneAndUpdate(
+            params.userId,
+            { $pull: { friends: params.friendId } },
             { new: true, runValidators: true }
         )
             .then(dbUserData => {
@@ -108,8 +109,7 @@ const userController = {
                 }
                 res.json(dbUserData)
             })
-            .catch(err => res.json(err)
-            );
+            .catch(err => res.json(err));
     }
 };
 
